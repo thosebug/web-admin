@@ -56,6 +56,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/user',
+    component: Layout,
+    redirect: '/info',
+    children: [{
+      path: '/info',
+      name: 'Info',
+      component: () => import('@/views/user/index'),
+      meta: { title: '用户管理', icon: 'table' }
+    }]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
