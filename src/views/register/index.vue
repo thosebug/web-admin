@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-position="left">
+
       <div class="title-container">
         <h3 class="title">贷款管理系统</h3>
       </div>
@@ -11,7 +12,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="registerForm.username"
           placeholder="用户名"
           name="username"
           type="text"
@@ -27,59 +28,84 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="loginForm.password"
+          v-model="registerForm.password"
           :type="passwordType"
           placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
-          @keyup.enter.native="handleLogin"
+          @keyup.enter.native="handleRegister"
+        />
+        <span class="show-pwd" @click="showPwd">
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+        </span>
+      </el-form-item>
+      <el-form-item prop="checkword">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input
+          :key="passwordType"
+          ref="checkword"
+          v-model="registerForm.checkword"
+          :type="passwordType"
+          placeholder="确认密码"
+          name="password"
+          tabindex="2"
+          auto-complete="on"
+          @keyup.enter.native="handleRegister"
         />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-
-      <div class="tips">
-        <el-row type="flex" justify="space-between">
-          <el-col class="link"><el-link type="primary" @click="handleRegister">立即注册</el-link></el-col>
-          <el-col class="link"><el-link type="primary">忘记密码</el-link></el-col>
-        </el-row>
-      </div>
-
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">注册</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
+import { validUsername } from '@/utils/validate'
 
 export default {
-  name: 'Login',
+  name: 'Register',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if ((value === '')) {
+      if (!validUsername(value)) {
         callback(new Error('请输入正确的用户名'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else if (value.length < 6) {
         callback(new Error('密码长度不能小于6位'))
       } else {
         callback()
       }
     }
+    const validateCheckword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致'))
+      } else {
+        callback()
+      }
+    }
     return {
-      loginForm: {
-        username: 'admin',
-        password: '111111'
+      registerForm: {
+        username: '',
+        password: '',
+        checkword: ''
       },
-      loginRules: {
+      registerRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        checkword: [{ required: true, trigger: 'blur', validator: validateCheckword }]
       },
       loading: false,
       passwordType: 'password',
@@ -106,15 +132,10 @@ export default {
       })
     },
     handleRegister() {
-      this.loading = true
-      this.$router.push({ path: '/register' })
-      this.loading = false
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          this.$store.dispatch('user/register', this.registerForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
@@ -206,9 +227,6 @@ $light_gray:#eee;
       &:first-of-type {
         margin-right: 16px;
       }
-    }
-    .link {
-      width: fit-content;
     }
   }
 
