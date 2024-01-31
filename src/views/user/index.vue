@@ -31,7 +31,8 @@
       </el-table-column>
       <el-table-column label="简介" width="300px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.profile }}</span>
+          <span v-if="row.profile!==null">{{ row.profile }}</span>
+          <span v-else>用户很懒，什么都没有写！</span>
         </template>
       </el-table-column>
       <el-table-column label="角色" width="80px">
@@ -51,6 +52,12 @@
           </el-button>
           <el-button type="success" size="mini">
             编辑
+          </el-button>
+          <el-button v-if="row.role!=='ban'" size="mini">
+            禁用
+          </el-button>
+          <el-button v-else size="mini">
+            启用
           </el-button>
           <el-button type="danger" size="mini">
             删除
