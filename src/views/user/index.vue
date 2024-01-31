@@ -4,7 +4,6 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
@@ -37,7 +36,9 @@
       </el-table-column>
       <el-table-column label="角色" width="80px">
         <template slot-scope="{row}">
-          <span>{{ row.role }}</span>
+          <el-tag :type="row.role | roleFilter">
+            {{ row.role }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180px">
@@ -76,6 +77,16 @@ import Pagination from '@/components/Pagination'
 export default {
   name: 'UserList',
   components: { Pagination },
+  filters: {
+    roleFilter(role) {
+      const roleMap = {
+        admin: 'success',
+        user: 'info',
+        ban: 'danger'
+      }
+      return roleMap[role]
+    },
+  },
   data() {
     return {
       tableKey: 0,
@@ -103,7 +114,7 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1.5 * 1000)
+        }, 0.5 * 1000)
       })
     }
   }
