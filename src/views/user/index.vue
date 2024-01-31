@@ -80,8 +80,8 @@ export default {
   filters: {
     roleFilter(role) {
       const roleMap = {
-        admin: 'success',
-        user: 'info',
+        admin: '',
+        user: 'success',
         ban: 'danger'
       }
       return roleMap[role]
