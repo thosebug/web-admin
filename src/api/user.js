@@ -23,6 +23,14 @@ export function getInfo() {
   })
 }
 
+export function getPage(data) {
+  return request({
+    url: '/user/page',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/user/logout',
