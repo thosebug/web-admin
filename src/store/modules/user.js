@@ -93,7 +93,7 @@ const actions = {
 
   changeRole(id, role) {
     return new Promise((resolve, reject) => {
-      changeRole({id: id, role: role}).then((response) => {
+      changeRole({ id: id, role: role }).then((response) => {
         const { data } = response
         resolve(data)
       }).catch(error => {
