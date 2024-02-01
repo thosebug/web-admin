@@ -1,4 +1,4 @@
-import { login, logout, getInfo, register, getPage } from '@/api/user'
+import { login, logout, getInfo, register, getPage, changeRole } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -66,13 +66,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { data } = response
-
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
         const { account, avatar, role } = data
-
         commit('SET_NAME', account)
         commit('SET_AVATAR', avatar)
         commit('SET_ROLE', role)
@@ -83,9 +80,20 @@ const actions = {
     })
   },
 
-  getPage({ commit }, userQuery) {
+  getPage(userQuery) {
     return new Promise((resolve, reject) => {
       getPage(userQuery).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  changeRole(id, role) {
+    return new Promise((resolve, reject) => {
+      changeRole({id: id, role: role}).then((response) => {
         const { data } = response
         resolve(data)
       }).catch(error => {

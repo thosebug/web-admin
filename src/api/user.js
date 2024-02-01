@@ -31,6 +31,14 @@ export function getPage(data) {
   })
 }
 
+export function changeRole(data) {
+  return request({
+    url: 'user/role',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/user/logout',

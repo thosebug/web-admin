@@ -62,7 +62,7 @@
           <el-button type="primary" size="mini"> 查看 </el-button>
           <el-button type="success" size="mini"> 编辑 </el-button>
           <el-button v-if="row.role !== 'ban'" size="mini"> 禁用 </el-button>
-          <el-button v-else size="mini"> 启用 </el-button>
+          <el-button v-else size="mini" @click="handleRole(row, 'unban')"> 启用 </el-button>
           <el-button type="danger" size="mini"> 删除 </el-button>
         </template>
       </el-table-column>
@@ -114,7 +114,7 @@ export default {
   methods: {
     getUserList() {
       this.listLoading = true
-      this.$store.dispatch("user/getPage", this.listQuery).then((response) => {
+      this.$store.dispatch('user/getPage', this.listQuery).then((response) => {
         this.list = response.records
         this.total = parseInt(response.total)
         // Just to simulate the time of the request
@@ -122,6 +122,9 @@ export default {
           this.listLoading = false
         }, 0.5 * 1000)
       })
+    },
+    handleRole(row, role) {
+      this.$store.dispatch('user/')
     }
   }
 }
