@@ -80,7 +80,7 @@ const actions = {
     })
   },
 
-  getPage(userQuery) {
+  getPage({ commit }, userQuery) {
     return new Promise((resolve, reject) => {
       getPage(userQuery).then((response) => {
         const { data } = response
@@ -91,9 +91,9 @@ const actions = {
     })
   },
 
-  changeRole(id, role) {
+  updateRole({ commit }, roleInfo) {
     return new Promise((resolve, reject) => {
-      changeRole({ id: id, role: role }).then((response) => {
+      changeRole({ id: roleInfo.id, role: roleInfo.role }).then((response) => {
         const { data } = response
         resolve(data)
       }).catch(error => {

@@ -29,7 +29,7 @@
         <template slot-scope="{ row }">
           <el-image
             :src="row.avatar"
-            :fit="cover"
+            fit="cover"
             style="width: 40px; height: 40px"
           />
         </template>
@@ -61,8 +61,8 @@
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini"> 查看 </el-button>
           <el-button type="success" size="mini"> 编辑 </el-button>
-          <el-button v-if="row.role !== 'ban'" size="mini"> 禁用 </el-button>
-          <el-button v-else size="mini" @click="handleRole(row, 'unban')"> 启用 </el-button>
+          <el-button v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
+          <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
           <el-button type="danger" size="mini"> 删除 </el-button>
         </template>
       </el-table-column>
@@ -123,8 +123,16 @@ export default {
         }, 0.5 * 1000)
       })
     },
-    handleRole(row, role) {
-      this.$store.dispatch('user/')
+    handleRole(id, role) {
+      this.listLoading = true
+      const roleInfo = { id, role }
+      this.$store.dispatch('user/updateRole', roleInfo).then((response) => {
+        this.$message.success(response)
+        this.getUserList()
+        setTimeout(() => {
+          this.listLoading = false
+        }, 0.5 * 1000)
+      })
     }
   }
 }
