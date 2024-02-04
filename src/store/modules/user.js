@@ -1,4 +1,4 @@
-import { login, logout, getInfo, register, getPage, changeRole } from '@/api/user'
+import { login, logout, getInfo, register, getPage, changeRole, createUser, deleteUser } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -94,6 +94,28 @@ const actions = {
   updateRole({ commit }, roleInfo) {
     return new Promise((resolve, reject) => {
       changeRole({ id: roleInfo.id, role: roleInfo.role }).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  createUser({ commit }, userData) {
+    return new Promise((resolve, reject) => {
+      createUser(userData).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  deleteUser({ commit }, userId) {
+    return new Promise((resolve, reject) => {
+      deleteUser(userId).then((response) => {
         const { data } = response
         resolve(data)
       }).catch(error => {

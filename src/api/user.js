@@ -39,6 +39,21 @@ export function changeRole(data) {
   })
 }
 
+export function createUser(data) {
+  return request({
+    url: 'user/add',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: 'user/del/' + data,
+    method: 'get'
+  })
+}
+
 export function logout() {
   return request({
     url: '/user/logout',
