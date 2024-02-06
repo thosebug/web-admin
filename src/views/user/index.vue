@@ -266,6 +266,7 @@ export default {
           this.listLoading = true
           this.$store.dispatch('user/createUser', this.temp).then((response) => {
             this.$message.success(response)
+            this.dialogFormVisible = false
             this.getUserList()
             setTimeout(() => {
               this.listLoading = false
