@@ -23,10 +23,11 @@
       :data="list"
       border
       fit
+      stripe
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column type="selection" width="50" />
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="编号" prop="id" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
@@ -51,20 +52,20 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="简介" width="400px" align="center">
+      <el-table-column label="简介" width="auto" align="center">
         <template slot-scope="{ row }">
           <span v-if="row.profile !== null">{{ row.profile }}</span>
           <span v-else>用户很懒，什么都没有写！</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色" width="65px">
+      <el-table-column label="角色" width="65px" align="center">
         <template slot-scope="{ row }">
           <el-tag :type="row.role | roleFilter">
             {{ row.role }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="180px">
+      <el-table-column label="创建时间" width="180px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.createTime }}</span>
         </template>
