@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.account" placeholder="昵称" clearable class="filter-item" style="width: 200px" />
-      <el-select v-model="listQuery.role" style="width: 200px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in roleOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.price" placeholder="价格" clearable class="filter-item" style="width: 200px" />
+      <el-select v-model="listQuery.isBan" style="width: 200px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button v-waves class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
         搜索
@@ -32,20 +32,25 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户名" width="150px" align="center">
+      <el-table-column label="名称" width="150px" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.username }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="昵称" width="150px" align="center">
+      <el-table-column label="金额" width="150px" align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.account }}</span>
+          <span>{{ row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="头像" width="60px" align="center">
+      <el-table-column label="周期" width="60px" align="center">
+        <template slot-scope="{ row }">
+          <span>{{ row.cycle }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="照片" width="60px" align="center">
         <template slot-scope="{ row }">
           <el-image
-            :src="row.avatar"
+            :src="row.photo"
             fit="cover"
             style="width: 40px; height: 40px"
           />
@@ -54,13 +59,13 @@
       <el-table-column label="简介" width="400px" align="center">
         <template slot-scope="{ row }">
           <span v-if="row.profile !== null">{{ row.profile }}</span>
-          <span v-else>用户很懒，什么都没有写！</span>
+          <span v-else>这个产品还没有描述！</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色" width="65px">
+      <el-table-column label="状态" width="65px">
         <template slot-scope="{ row }">
-          <el-tag :type="row.role | roleFilter">
-            {{ row.role }}
+          <el-tag :type="row.isBan | banFilter">
+            {{ row.isBan | isBanFilter }}
           </el-tag>
         </template>
       </el-table-column>
@@ -89,41 +94,8 @@
       :total="total"
       :page.sync="listQuery.current"
       :limit.sync="listQuery.size"
-      @pagination="getUserList"
+      @pagination="getGoodList"
     />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="temp.username" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="temp.password" show-password />
-        </el-form-item>
-        <el-form-item label="昵称" prop="account">
-          <el-input v-model="temp.account" />
-        </el-form-item>
-        <el-form-item label="头像" prop="avatar">
-          <el-input v-model="temp.avatar" />
-        </el-form-item>
-        <el-form-item label="简介" prop="profile">
-          <el-input v-model="temp.profile" type="textarea" />
-        </el-form-item>
-        <el-form-item label="角色">
-          <el-select v-model="temp.role" class="filter-item" placeholder="请选择">
-            <el-option v-for="item in roleOptions" :key="item.key" :label="item.label" :value="item.key" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -132,7 +104,66 @@
 import Pagination from '@/components/Pagination/index.vue'
 
 export default {
-  components: { Pagination }
+  components: { Pagination },
+  filters: {
+    isBanFilter(isBan) {
+      const isBanMap = {
+        0: '启用',
+        1: '禁用'
+      }
+      return isBanMap[isBan]
+    },
+    banFilter(isBan) {
+      const BanMap = {
+        0: '',
+        1: 'danger'
+      }
+      return BanMap[isBan]
+    }
+  },
+  data() {
+    return {
+      tableKey: 0,
+      list: null,
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        current: 1,
+        size: 10,
+        name: undefined,
+        price: undefined,
+        isBan: undefined
+      },
+      banOptions: [{ label: '启用', key: 0 }, { label: '禁用', key: 1 }],
+    }
+  },
+  created() {
+    this.getGoodList()
+  },
+  methods: {
+    getGoodList() {
+      this.listLoading = true
+      this.$store.dispatch('good/getPage', this.listQuery).then((response) => {
+        this.list = response.records
+        this.total = parseInt(response.total)
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 0.5 * 1000)
+      })
+    },
+    handleFilter() {
+      this.listQuery.current = 1
+      this.getGoodList()
+    },
+    handleReset() {
+      this.listQuery.current = 1
+      this.listQuery.name = undefined
+      this.listQuery.price = undefined
+      this.listQuery.isBan = undefined
+      this.getGoodList()
+    },
+  }
 }
 </script>
 
