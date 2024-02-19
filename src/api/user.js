@@ -47,6 +47,14 @@ export function createUser(data) {
   })
 }
 
+export function updateUser(data) {
+  return request({
+    url: 'user/update',
+    method: 'post',
+    data
+  })
+}
+
 export function deleteUser(data) {
   return request({
     url: 'user/del/' + data,

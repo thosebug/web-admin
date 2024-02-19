@@ -1,4 +1,4 @@
-import { login, logout, getInfo, register, getPage, changeRole, createUser, deleteUser } from '@/api/user'
+import { login, logout, getInfo, register, getPage, changeRole, createUser, deleteUser, updateUser } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -105,6 +105,17 @@ const actions = {
   createUser({ commit }, userData) {
     return new Promise((resolve, reject) => {
       createUser(userData).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  updateUser({ commit }, userData) {
+    return new Promise((resolve, reject) => {
+      updateUser(userData).then((response) => {
         const { data } = response
         resolve(data)
       }).catch(error => {

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.price" placeholder="价格" clearable class="filter-item" style="width: 200px" />
+      <el-input v-model="listQuery.price" placeholder="金额" clearable class="filter-item" style="width: 200px" />
       <el-select v-model="listQuery.isBan" style="width: 200px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
@@ -42,7 +42,7 @@
           <span>{{ row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="周期" width="60px" align="center">
+      <el-table-column label="周期" width="150px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.cycle }}</span>
         </template>
@@ -62,14 +62,14 @@
           <span v-else>这个产品还没有描述！</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="65px">
+      <el-table-column label="状态" width="65px" align="center">
         <template slot-scope="{ row }">
           <el-tag :type="row.isBan | banFilter">
             {{ row.isBan | isBanFilter }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="180px">
+      <el-table-column label="创建时间" width="180px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.createTime }}</span>
         </template>

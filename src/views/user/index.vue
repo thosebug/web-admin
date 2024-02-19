@@ -6,10 +6,10 @@
       <el-select v-model="listQuery.role" style="width: 200px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in roleOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
+      <el-button class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh-left" @click="handleReset">
+      <el-button class="filter-item" type="info" icon="el-icon-refresh-left" @click="handleReset">
         重置
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
@@ -43,7 +43,7 @@
           <span>{{ row.account }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="头像" width="60px" align="center">
+      <el-table-column label="头像" width="100px" align="center">
         <template slot-scope="{ row }">
           <el-image
             :src="row.avatar"
@@ -58,7 +58,7 @@
           <span v-else>用户很懒，什么都没有写！</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色" width="65px" align="center">
+      <el-table-column label="角色" width="100px" align="center">
         <template slot-scope="{ row }">
           <el-tag :type="row.role | roleFilter">
             {{ row.role }}
@@ -78,7 +78,7 @@
       >
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini"> 查看 </el-button>
-          <el-button type="success" size="mini"> 编辑 </el-button>
+          <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑 </el-button>
           <el-button v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
           <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
@@ -266,6 +266,29 @@ export default {
         if (valid) {
           this.listLoading = true
           this.$store.dispatch('user/createUser', this.temp).then((response) => {
+            this.$message.success(response)
+            this.dialogFormVisible = false
+            this.getUserList()
+            setTimeout(() => {
+              this.listLoading = false
+            }, 0.5 * 1000)
+          })
+        }
+      })
+    },
+    handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          this.$store.dispatch('user/updateUser', tempData).then((response) => {
             this.$message.success(response)
             this.dialogFormVisible = false
             this.getUserList()
