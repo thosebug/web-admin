@@ -115,7 +115,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)"> 编辑</el-button>
+          <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑</el-button>
           <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)">禁用</el-button>
           <el-button v-else size="mini" @click="handleBan(row.id, 0)">启用</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)">删除</el-button>

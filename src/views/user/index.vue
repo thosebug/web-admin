@@ -77,7 +77,7 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{ row }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)"> 编辑 </el-button>
+          <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑 </el-button>
           <el-button type="warning" v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
           <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
