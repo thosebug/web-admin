@@ -7,3 +7,18 @@ export function getPage(data) {
     data
   })
 }
+
+export function updateIsBan(data) {
+  return request({
+    url: '/good/isBan',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteGood(data) {
+  return request({
+    url: 'good/del/' + data,
+    method: 'get'
+  })
+}

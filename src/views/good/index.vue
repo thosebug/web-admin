@@ -65,8 +65,8 @@
       <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini"> 编辑 </el-button>
-          <el-button type="warning" v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
-          <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
+          <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)"> 禁用 </el-button>
+          <el-button v-else size="mini" @click="handleBan(row.id, 0)"> 启用 </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
@@ -138,6 +138,28 @@ export default {
       this.listQuery.price = undefined
       this.listQuery.isBan = undefined
       this.getGoodList()
+    },
+    handleBan(id, isban) {
+      this.listLoading = true
+      const banInfo = { id, isban }
+      this.$store.dispatch('good/updateIsBan', banInfo).then((response) => {
+        this.dialogFormVisible = false
+        this.$message.success(response)
+        this.getGoodList()
+        setTimeout(() => {
+          this.listLoading = false
+        }, 0.5 * 1000)
+      })
+    },
+    handleDelete(id) {
+      this.listLoading = true
+      this.$store.dispatch('good/deleteGood', id).then((response) => {
+        this.$message.success(response)
+        this.getGoodList()
+        setTimeout(() => {
+          this.listLoading = false
+        }, 0.5 * 1000)
+      })
     }
   }
 }
