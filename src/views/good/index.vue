@@ -1,23 +1,69 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.price" placeholder="金额" clearable class="filter-item" style="width: 200px" />
-      <el-select v-model="listQuery.isBan" style="width: 200px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-input
+        v-model="listQuery.name"
+        placeholder="名称"
+        style="width: 200px"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.price"
+        placeholder="金额"
+        clearable
+        class="filter-item"
+        style="width: 200px"
+      />
+      <el-select
+        v-model="listQuery.isBan"
+        style="width: 200px"
+        class="filter-item"
+        @change="handleFilter"
+      >
+        <el-option
+          v-for="item in banOptions"
+          :key="item.key"
+          :label="item.label"
+          :value="item.key"
+        />
       </el-select>
-      <el-button class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
+      <el-button
+        class="filter-item"
+        type="warning"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
         搜索
       </el-button>
-      <el-button class="filter-item" type="info" icon="el-icon-refresh-left" @click="handleReset">
+      <el-button
+        class="filter-item"
+        type="info"
+        icon="el-icon-refresh-left"
+        @click="handleReset"
+      >
         重置
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >
         新增
       </el-button>
     </div>
 
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%"
+    >
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="编号" prop="id" width="200px" align="center">
         <template slot-scope="{ row }">
@@ -41,12 +87,17 @@
       </el-table-column>
       <el-table-column label="照片" width="60px" align="center">
         <template slot-scope="{ row }">
-          <el-image v-if="row.photo" :src="row.photo" fit="cover" style="width: 40px; height: 40px"/>
+          <el-image
+            v-if="row.photo"
+            :src="row.photo"
+            fit="cover"
+            style="width: 40px; height: 40px"
+          />
         </template>
       </el-table-column>
       <el-table-column label="简介" width="auto" align="center">
         <template slot-scope="{ row }">
-          <span v-if="row.profile !== null">{{ row.profile }}</span>
+          <span v-if="row.profile !== ''">{{ row.profile }}</span>
           <span v-else>这个产品还没有描述！</span>
         </template>
       </el-table-column>
@@ -64,19 +115,53 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button type="primary" size="mini"> 编辑 </el-button>
-          <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)"> 禁用 </el-button>
-          <el-button v-else size="mini" @click="handleBan(row.id, 0)"> 启用 </el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(row)"> 编辑</el-button>
+          <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)">禁用</el-button>
+          <el-button v-else size="mini" @click="handleBan(row.id, 0)">启用</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getGoodList"/>
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getGoodList" />
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left: 50px">
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="金额" prop="price">
+          <el-input v-model="temp.price" />
+        </el-form-item>
+        <el-form-item label="周期" prop="cycle">
+          <el-select v-model="temp.cycle" class="filter-item" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in cycleOptions" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="图片" prop="photo">
+          <el-input v-model="temp.photo" />
+        </el-form-item>
+        <el-form-item label="简介" prop="profile">
+          <el-input v-model="temp.profile" type="textarea" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="temp.isBan" class="filter-item" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="dialogStatus === 'create' ? createData() : updateData()">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-
 import Pagination from '@/components/Pagination/index.vue'
 
 export default {
@@ -110,7 +195,43 @@ export default {
         price: undefined,
         isBan: undefined
       },
-      banOptions: [{ label: '启用', key: 0 }, { label: '禁用', key: 1 }]
+      banOptions: [
+        { label: '启用', key: 0 },
+        { label: '禁用', key: 1 }
+      ],
+      cycleOptions: [
+        { label: 1, key: 1 },
+        { label: 2, key: 2 },
+        { label: 3, key: 3 },
+        { label: 4, key: 4 },
+        { label: 5, key: 5 },
+        { label: 6, key: 6 },
+        { label: 7, key: 7 },
+        { label: 8, key: 8 },
+        { label: 9, key: 9 },
+        { label: 10, key: 10 },
+        { label: 11, key: 11 },
+        { label: 12, key: 12 }
+      ],
+      temp: {
+        id: undefined,
+        name: '',
+        price: '',
+        cycle: 1,
+        photo: '',
+        profile: '',
+        isBan: 0
+      },
+      rules: {
+        name: [{ required: true, trigger: 'blur' }],
+        price: [{ required: true, trigger: 'blur' }]
+      },
+      dialogFormVisible: false,
+      dialogStatus: '',
+      textMap: {
+        update: '编辑',
+        create: '创建'
+      }
     }
   },
   created() {
@@ -160,11 +281,68 @@ export default {
           this.listLoading = false
         }, 0.5 * 1000)
       })
+    },
+    resetTemp() {
+      this.temp = {
+        id: undefined,
+        name: '',
+        price: '',
+        cycle: 1,
+        photo: '',
+        profile: '',
+        isBan: 0
+      }
+    },
+    handleCreate() {
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.listLoading = true
+          this.$store
+            .dispatch('good/createGood', this.temp)
+            .then((response) => {
+              this.$message.success(response)
+              this.dialogFormVisible = false
+              this.getGoodList()
+              setTimeout(() => {
+                this.listLoading = false
+              }, 0.5 * 1000)
+            })
+        }
+      })
+    },
+    handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          this.$store.dispatch('good/updateGood', tempData).then((response) => {
+            this.$message.success(response)
+            this.dialogFormVisible = false
+            this.getGoodList()
+            setTimeout(() => {
+              this.listLoading = false
+            }, 0.5 * 1000)
+          })
+        }
+      })
     }
   }
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

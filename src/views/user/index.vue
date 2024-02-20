@@ -110,7 +110,7 @@
           <el-input v-model="temp.profile" type="textarea" />
         </el-form-item>
         <el-form-item label="角色">
-          <el-select v-model="temp.role" class="filter-item" placeholder="请选择">
+          <el-select v-model="temp.role" class="filter-item" placeholder="请选择" style="width: 100%">
             <el-option v-for="item in roleOptions" :key="item.key" :label="item.label" :value="item.key" />
           </el-select>
         </el-form-item>

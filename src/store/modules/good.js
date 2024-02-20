@@ -1,4 +1,4 @@
-import { deleteGood, getPage, updateIsBan } from '@/api/good'
+import { createGood, deleteGood, getPage, updateGood, updateIsBan } from '@/api/good'
 
 const actions = {
   // getpage
@@ -12,6 +12,7 @@ const actions = {
       })
     })
   },
+
   updateIsBan({ commit }, banInfo) {
     return new Promise((resolve, reject) => {
       updateIsBan({ id: banInfo.id, isBan: banInfo.isban }).then((response) => {
@@ -22,6 +23,29 @@ const actions = {
       })
     })
   },
+
+  createGood({ commit }, goodData) {
+    return new Promise((resolve, reject) => {
+      createGood(goodData).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  updateGood({ commit }, goodData) {
+    return new Promise((resolve, reject) => {
+      updateGood(goodData).then((response) => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
   deleteGood({ commit }, goodId) {
     return new Promise((resolve, reject) => {
       deleteGood(goodId).then((response) => {

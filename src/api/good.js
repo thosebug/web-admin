@@ -22,3 +22,19 @@ export function deleteGood(data) {
     method: 'get'
   })
 }
+
+export function createGood(data) {
+  return request({
+    url: '/good/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateGood(data) {
+  return request({
+    url: '/good/update',
+    method: 'post',
+    data
+  })
+}
