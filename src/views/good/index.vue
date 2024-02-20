@@ -6,10 +6,10 @@
       <el-select v-model="listQuery.isBan" style="width: 200px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
+      <el-button class="filter-item" type="warning" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh-left" @click="handleReset">
+      <el-button class="filter-item" type="info" icon="el-icon-refresh-left" @click="handleReset">
         重置
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
@@ -17,16 +17,8 @@
       </el-button>
     </div>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
-      <el-table-column type="selection" width="50" />
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="编号" prop="id" width="200px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
@@ -42,21 +34,17 @@
           <span>{{ row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="周期" width="150px" align="center">
+      <el-table-column label="周期" width="100px" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.cycle }}</span>
         </template>
       </el-table-column>
       <el-table-column label="照片" width="60px" align="center">
         <template slot-scope="{ row }">
-          <el-image
-            :src="row.photo"
-            fit="cover"
-            style="width: 40px; height: 40px"
-          />
+          <el-image v-if="row.photo" :src="row.photo" fit="cover" style="width: 40px; height: 40px"/>
         </template>
       </el-table-column>
-      <el-table-column label="简介" width="400px" align="center">
+      <el-table-column label="简介" width="auto" align="center">
         <template slot-scope="{ row }">
           <span v-if="row.profile !== null">{{ row.profile }}</span>
           <span v-else>这个产品还没有描述！</span>
@@ -74,28 +62,16 @@
           <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="400px"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button type="primary" size="mini"> 查看 </el-button>
-          <el-button type="success" size="mini"> 编辑 </el-button>
-          <el-button v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
+          <el-button type="primary" size="mini"> 编辑 </el-button>
+          <el-button type="warning" v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
           <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="listQuery.current"
-      :limit.sync="listQuery.size"
-      @pagination="getGoodList"
-    />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getGoodList"/>
   </div>
 </template>
 
@@ -134,7 +110,7 @@ export default {
         price: undefined,
         isBan: undefined
       },
-      banOptions: [{ label: '启用', key: 0 }, { label: '禁用', key: 1 }],
+      banOptions: [{ label: '启用', key: 0 }, { label: '禁用', key: 1 }]
     }
   },
   created() {
@@ -162,7 +138,7 @@ export default {
       this.listQuery.price = undefined
       this.listQuery.isBan = undefined
       this.getGoodList()
-    },
+    }
   }
 }
 </script>
