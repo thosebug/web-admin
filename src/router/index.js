@@ -55,7 +55,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '主页', icon: 'dashboard' }
+      meta: { title: '主页', icon: 'el-icon-s-home' }
     }]
   },
 
@@ -66,7 +66,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'UserInfo',
       component: () => import('@/views/user/index'),
-      meta: { title: '用户管理', icon: 'table' }
+      meta: { title: '用户管理', icon: 'el-icon-user-solid' }
     }]
   },
 
@@ -77,7 +77,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'GoodInfo',
       component: () => import('@/views/good/index'),
-      meta: { title: '产品管理', icon: 'table' }
+      meta: { title: '产品管理', icon: 'el-icon-s-goods' }
     }]
   },
 
