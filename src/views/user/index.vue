@@ -61,7 +61,7 @@
       <el-table-column label="角色" width="100px" align="center">
         <template slot-scope="{ row }">
           <el-tag :type="row.role | roleFilter">
-            {{ row.role }}
+            {{ row.role | roleTxFilter }}
           </el-tag>
         </template>
       </el-table-column>
@@ -78,7 +78,7 @@
       >
         <template slot-scope="{ row }">
           <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑 </el-button>
-          <el-button type="warning" v-if="row.role !== 'ban'" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
+          <el-button v-if="row.role !== 'ban'" type="warning" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
           <el-button v-else size="mini" @click="handleRole(row.id, 'user')"> 启用 </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)"> 删除 </el-button>
         </template>
@@ -139,6 +139,14 @@ export default {
         admin: '',
         user: 'success',
         ban: 'danger'
+      }
+      return roleMap[role]
+    },
+    roleTxFilter(role) {
+      const roleMap = {
+        admin: '管理员',
+        user: '用户',
+        ban: '禁用'
       }
       return roleMap[role]
     }
