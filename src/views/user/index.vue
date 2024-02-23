@@ -21,7 +21,6 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
-      border
       fit
       stripe
       highlight-current-row
@@ -70,12 +69,7 @@
           <span>{{ row.createTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="400px"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑 </el-button>
           <el-button v-if="row.role !== 'ban'" type="warning" size="mini" @click="handleRole(row.id, 'ban')"> 禁用 </el-button>
