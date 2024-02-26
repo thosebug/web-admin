@@ -170,7 +170,6 @@
 
 <script>
 import Pagination from '@/components/Pagination/index.vue'
-import item from '@/layout/components/Sidebar/Item.vue'
 
 export default {
   components: { Pagination },
@@ -229,7 +228,7 @@ export default {
             this.userOptions.push({ label: item.account, key: item.id })
           })
           response.good.map((item) => {
-            this.goodOptions.push({ label: item.name, key: item.id})
+            this.goodOptions.push({ label: item.name, key: item.id })
           })
         }
       })
