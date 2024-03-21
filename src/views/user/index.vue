@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column label="简介" width="auto" align="center">
         <template slot-scope="{ row }">
-          <span v-if="row.profile !== null">{{ row.profile }}</span>
+          <span v-if="isNotEmpty(row.profile)">{{ row.profile }}</span>
           <span v-else>用户很懒，什么都没有写！</span>
         </template>
       </el-table-column>
@@ -123,6 +123,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
+import { isNotEmpty } from '@/utils/validate'
 
 export default {
   name: 'UserList',
@@ -200,6 +201,7 @@ export default {
     this.getUserList()
   },
   methods: {
+    isNotEmpty,
     getUserList() {
       this.listLoading = true
       this.$store.dispatch('user/getPage', this.listQuery).then((response) => {

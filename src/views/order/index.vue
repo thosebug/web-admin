@@ -111,7 +111,7 @@
       </el-table-column>
       <el-table-column label="备注" width="auto" align="center">
         <template slot-scope="{ row }">
-          <span v-if="row.context !== ''">{{ row.context }}</span>
+          <span v-if="isNotEmpty(row.context)">{{ row.context }}</span>
           <span v-else>无</span>
         </template>
       </el-table-column>
@@ -133,27 +133,36 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left: 50px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="金额" prop="price">
-          <el-input v-model="temp.price" />
-        </el-form-item>
-        <el-form-item label="周期" prop="cycle">
-          <el-select v-model="temp.cycle" class="filter-item" placeholder="请选择" style="width: 100%">
-            <el-option v-for="item in cycleOptions" :key="item.key" :label="item.label" :value="item.key" />
+        <el-form-item label="用户" prop="user">
+          <el-select
+            v-model="temp.userId"
+            style="width: 100%"
+            class="filter-item"
+          >
+            <el-option
+              v-for="item in userOptions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="图片" prop="photo">
-          <el-input v-model="temp.photo" />
-        </el-form-item>
-        <el-form-item label="简介" prop="profile">
-          <el-input v-model="temp.profile" type="textarea" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="temp.isBan" class="filter-item" placeholder="请选择" style="width: 100%">
-            <el-option v-for="item in banOptions" :key="item.key" :label="item.label" :value="item.key" />
+        <el-form-item label="产品" prop="good">
+          <el-select
+            v-model="temp.goodId"
+            style="width: 100%"
+            class="filter-item"
+          >
+            <el-option
+              v-for="item in goodOptions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            />
           </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="context">
+          <el-input v-model="temp.context" type="textarea" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -170,6 +179,7 @@
 
 <script>
 import Pagination from '@/components/Pagination/index.vue'
+import { isNotEmpty } from '@/utils/validate'
 
 export default {
   components: { Pagination },
@@ -197,16 +207,13 @@ export default {
       goodOptions: [],
       temp: {
         id: undefined,
-        name: '',
-        price: '',
-        cycle: 1,
-        photo: '',
-        profile: '',
-        isBan: 0
+        userId: '',
+        goodId: '',
+        context: ''
       },
       rules: {
-        name: [{ required: true, trigger: 'blur' }],
-        price: [{ required: true, trigger: 'blur' }]
+        userId: [{ required: true, trigger: 'blur' }],
+        goodId: [{ required: true, trigger: 'blur' }]
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -221,6 +228,7 @@ export default {
     this.getOrderList()
   },
   methods: {
+    isNotEmpty,
     getQuery() {
       this.$store.dispatch('order/getQuery', this.listQuery).then((response) => {
         if (response !== null) {
@@ -258,7 +266,7 @@ export default {
     },
     handleDelete(id) {
       this.listLoading = true
-      this.$store.dispatch('order/deleteGood', id).then((response) => {
+      this.$store.dispatch('order/deleteOrder', id).then((response) => {
         this.$message.success(response)
         this.getGoodList()
         setTimeout(() => {
@@ -269,12 +277,9 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        name: '',
-        price: '',
-        cycle: 1,
-        photo: '',
-        profile: '',
-        isBan: 0
+        userId: '',
+        goodId: '',
+        context: ''
       }
     },
     handleCreate() {
@@ -290,11 +295,11 @@ export default {
         if (valid) {
           this.listLoading = true
           this.$store
-            .dispatch('good/createGood', this.temp)
+            .dispatch('order/createOrder', this.temp)
             .then((response) => {
               this.$message.success(response)
               this.dialogFormVisible = false
-              this.getGoodList()
+              this.getOrderList()
               setTimeout(() => {
                 this.listLoading = false
               }, 0.5 * 1000)
@@ -314,7 +319,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          this.$store.dispatch('good/updateGood', tempData).then((response) => {
+          this.$store.dispatch('order/updateOrder', tempData).then((response) => {
             this.$message.success(response)
             this.dialogFormVisible = false
             this.getGoodList()

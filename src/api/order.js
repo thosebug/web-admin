@@ -14,3 +14,26 @@ export function getPage(data) {
     data
   })
 }
+
+export function deleteOrder(data) {
+  return request({
+    url: 'order/del/' + data,
+    method: 'get'
+  })
+}
+
+export function createOrder(data) {
+  return request({
+    url: '/order/add',
+    method: 'post',
+    data
+  })
+}
+
+export function updateOrder(data) {
+  return request({
+    url: '/order/update',
+    method: 'post',
+    data
+  })
+}

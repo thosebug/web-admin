@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column label="简介" width="auto" align="center">
         <template slot-scope="{ row }">
-          <span v-if="row.profile !== ''">{{ row.profile }}</span>
+          <span v-if="isNotEmpty(row.profile)">{{ row.profile }}</span>
           <span v-else>这个产品还没有描述！</span>
         </template>
       </el-table-column>
@@ -162,6 +162,7 @@
 
 <script>
 import Pagination from '@/components/Pagination/index.vue'
+import { isNotEmpty } from '@/utils/validate'
 
 export default {
   components: { Pagination },
@@ -229,6 +230,7 @@ export default {
     this.getGoodList()
   },
   methods: {
+    isNotEmpty,
     getGoodList() {
       this.listLoading = true
       this.$store.dispatch('good/getPage', this.listQuery).then((response) => {
