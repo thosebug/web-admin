@@ -122,14 +122,14 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
-          <el-button type="success" size="mini"> 编辑</el-button>
+          <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑</el-button>
           <el-button v-if="row.isBan === 0" type="warning" size="mini">禁用</el-button>
           <el-button v-else size="mini">启用</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getGoodList" />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.current" :limit.sync="listQuery.size" @pagination="getOrderList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left: 50px">
@@ -268,7 +268,7 @@ export default {
       this.listLoading = true
       this.$store.dispatch('order/deleteOrder', id).then((response) => {
         this.$message.success(response)
-        this.getGoodList()
+        this.getOrderList()
         setTimeout(() => {
           this.listLoading = false
         }, 0.5 * 1000)
@@ -307,8 +307,18 @@ export default {
         }
       })
     },
+    handleOption(arr, label) {
+      for (const item of arr) {
+        if (item.label === label) {
+          return item.key
+        }
+      }
+      return null
+    },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      this.temp.userId = this.handleOption(this.userOptions, row.userName)
+      this.temp.goodId = this.handleOption(this.goodOptions, row.goodName)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -322,7 +332,7 @@ export default {
           this.$store.dispatch('order/updateOrder', tempData).then((response) => {
             this.$message.success(response)
             this.dialogFormVisible = false
-            this.getGoodList()
+            this.getOrderList()
             setTimeout(() => {
               this.listLoading = false
             }, 0.5 * 1000)

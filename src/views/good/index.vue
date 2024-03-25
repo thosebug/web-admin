@@ -100,7 +100,7 @@
           <span v-else>这个产品还没有描述！</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="65px" align="center">
+      <el-table-column label="状态" width="100px" align="center">
         <template slot-scope="{ row }">
           <el-tag :type="row.isBan | banFilter">
             {{ row.isBan | isBanFilter }}
@@ -115,8 +115,8 @@
       <el-table-column label="操作" align="center" width="400px" class-name="small-padding fixed-width">
         <template slot-scope="{ row }">
           <el-button type="success" size="mini" @click="handleUpdate(row)"> 编辑</el-button>
-          <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)">禁用</el-button>
-          <el-button v-else size="mini" @click="handleBan(row.id, 0)">启用</el-button>
+          <el-button v-if="row.isBan === 0" type="warning" size="mini" @click="handleBan(row.id, 1)">审批通过</el-button>
+          <el-button v-else size="mini" @click="handleBan(row.id, 0)">取消审批</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -169,15 +169,15 @@ export default {
   filters: {
     isBanFilter(isBan) {
       const isBanMap = {
-        0: '启用',
-        1: '禁用'
+        0: '未审批',
+        1: '审批通过'
       }
       return isBanMap[isBan]
     },
     banFilter(isBan) {
       const BanMap = {
         0: '',
-        1: 'danger'
+        1: 'success'
       }
       return BanMap[isBan]
     }
@@ -196,8 +196,8 @@ export default {
         isBan: undefined
       },
       banOptions: [
-        { label: '启用', key: 0 },
-        { label: '禁用', key: 1 }
+        { label: '未审批', key: 0 },
+        { label: '审批通过', key: 1 }
       ],
       cycleOptions: [
         { label: 1, key: 1 },
